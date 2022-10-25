@@ -1,0 +1,12 @@
+# RDP-Disconnect.ps1
+# Disconnect from a RDP session without locking the screen. Useful for headless gaming machines.
+# Tested with Windows 10 only
+
+# Elevate to Admin
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+
+# Find active session and switch to console
+$session = query session | sls 'Active' 
+$sessionId = $session.toString().Split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[2]
+
+tscon $sessionId /dest:console
